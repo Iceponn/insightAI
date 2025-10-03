@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Customer Insights</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Added Showdown library to render Markdown from the AI response -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <style>
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .insight-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px_6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .profile-table th, .profile-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .profile-table th {
+            text-align: left;
+            font-weight: 600;
+            color: #4b5563;
+            width: 40%;
+        }
+        .profile-table td {
+            color: #1f2937;
+        }
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        #initial-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+            text-align: center;
+            color: #6b7280;
+        }
+        .loader, .insight-loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto; /* Center the loader */
+        }
+        #loader {
+            display: none;
+            margin-bottom: 16px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* New styles for AI-generated content */
+        #ai-insight-content h3 {
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem; /* Increased font size */
+            font-weight: 600;
+            color: #1f2937;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        #ai-insight-content h3:first-of-type {
+            margin-top: 0;
+        }
+        #ai-insight-content h3 svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.75rem;
+            color: #3b82f6; /* Blue icon color */
+        }
+        #ai-insight-content p {
+            line-height: 1.7;
+            padding-left: 2.25rem; /* Indent text under icons */
+            color: #374151;
+        }
+        #ai-insight-content strong {
+            color: #111827;
+            font-weight: 600;
+        }
+        /* Specific styling for the recommendation section */
+        #ai-insight-content #recommendation-section {
+            background-color: #e0f2fe; /* Light blue background */
+            border-left: 4px solid #3b82f6; /* Blue left border */
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        #ai-insight-content #recommendation-section h3 {
+            margin-top: 0;
+            color: #1e3a8a; /* Darker blue for text */
+        }
+        #ai-insight-content #recommendation-section svg {
+            color: #1e3a8a;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">AI Customer Insights Dashboard</h1>
+            <p class="text-gray-600 mt-1">Select a customer to view their profile and AI-generated insights.</p>
+        </header>
+
+        <!-- Customer Selector -->
+        <div class="mb-8 max-w-md">
+            <label for="customer-select" class="block text-sm font-medium text-gray-700 mb-2">Select Customer</label>
+            <select id="customer-select" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <option value="">-- Please choose a customer --</option>
+            </select>
+        </div>
+        
+        <div id="loader" class="loader"></div>
+
+        <!-- Main Content Area -->
+        <main id="content-area" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Left Column: Customer Profile -->
+                <div class="insight-card p-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 border-b pb-3 mb-4">Customer Profile</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full profile-table">
+                            <tbody>
+                                <tr><th>Customer ID</th><td id="profile-id"></td></tr>
+                                <tr><th>Name</th><td id="profile-name"></td></tr>
+                                <tr><th>Age</th><td id="profile-age"></td></tr>
+                                <tr><th>Date of Birth</th><td id="profile-dob"></td></tr>
+                                <tr><th>Prestige Status</th><td id="profile-prestige"></td></tr>
+                                <tr><th>Lead Score</th><td id="profile-lead-score"></td></tr>
+                                <tr><th>Vitality Status</th><td id="profile-vitality-status"></td></tr>
+                                <tr><th>Vitality Points</th><td id="profile-vitality-points"></td></tr>
+                                <tr><th>Total Health Sum Assure</th><td id="profile-health-sum"></td></tr>
+                                <tr><th>Total CI Sum Assure</th><td id="profile-ci-sum"></td></tr>
+                                <tr><th>Last 3M Activity</th><td id="profile-activity"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Column: AI Insight -->
+                <div class="insight-card p-6 bg-blue-50">
+                     <div class="flex items-center border-b pb-3 mb-4">
+                        <svg class="w-8 h-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        <h2 class="text-2xl font-semibold text-gray-800">ข้อมูลเชิงลึกและคำแนะนำจาก AI</h2>
+                    </div>
+                    <div id="ai-insight-content" class="text-gray-700">
+                        <!-- Content will be generated here by the AI -->
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Initial View -->
+        <div id="initial-view">
+             <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <p class="text-xl">กรุณาเลือกลูกค้าเพื่อเริ่มต้น</p>
+        </div>
+    </div>
+
+    <script>
+        const csvData = `Customer_ID,Customer_name,Lead_Score,Age,DOB,Prestige_status,Vitality_Status,Vitality_Point,Total_Health_Sum_Assure,Total_CI_Sum_Assure,Product recommendation,Last_3M_Activity
+55162,Ice,9,36,05-Jun-25,Non-Prestige,Bronze,100,70000,50000,AIA CI Pro care,"Visit health product on website, Download CI care brochure download"
+55163,Opal,5,28,01-Oct-25,Gold,Gold,8500,2000000,3100000,AIA legacy prestige,"Visit AIA product website, Download health product brochure, Submit lead, Login AIA+ app everyday"
+55164,John,7,45,15-Mar-80,Platinum,Silver,4500,5000000,1000000,AIA Health Happy,"Searched for retirement plans, clicked on a health insurance ad"
+55165,Lisa,3,22,20-Apr-03,Non-Prestige,Bronze,500,50000,0,AIA CI Care,"New graduate, visited career page, downloaded first-jobber insurance guide"
+55166,Mike,8,52,11-Nov-72,Gold,Platinum,12000,3000000,5000000,AIA Infinite Wealth Prestige,"Regularly checks investment-linked products, high app usage, attended a financial webinar"`;
+
+        function parseCSV(data) {
+            const rows = data.trim().split('\n');
+            const headers = rows[0].split(',').map(h => h.trim());
+            const records = rows.slice(1).map(row => {
+                const values = row.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/"/g, ''));
+                const record = {};
+                headers.forEach((header, index) => {
+                    record[header] = values[index];
+                });
+                return record;
+            });
+            return records;
+        }
+
+        const customers = parseCSV(csvData);
+        const customerSelect = document.getElementById('customer-select');
+        const contentArea = document.getElementById('content-area');
+        const initialView = document.getElementById('initial-view');
+        const loader = document.getElementById('loader');
+        const markdownConverter = new showdown.Converter();
+        markdownConverter.setOption('noHeaderId', true); // Prevents creating IDs for headers
+
+        customers.forEach(customer => {
+            const option = document.createElement('option');
+            option.value = customer.Customer_ID;
+            option.textContent = `${customer.Customer_name} (ID: ${customer.Customer_ID})`;
+            customerSelect.appendChild(option);
+        });
+
+        customerSelect.addEventListener('change', (event) => {
+            const customerId = event.target.value;
+            if (customerId) {
+                initialView.style.display = 'none';
+                contentArea.classList.add('hidden');
+                loader.style.display = 'block';
+                const selectedCustomer = customers.find(c => c.Customer_ID === customerId);
+                if (selectedCustomer) {
+                    displayCustomerData(selectedCustomer);
+                    loader.style.display = 'none';
+                    contentArea.classList.remove('hidden');
+                }
+            } else {
+                contentArea.classList.add('hidden');
+                initialView.style.display = 'flex';
+            }
+        });
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', minimumFractionDigits: 0 }).format(value);
+        }
+
+        function getTag(type, text) {
+             let bgColor, textColor;
+             switch(type) {
+                case 'high': bgColor = 'bg-green-100'; textColor = 'text-green-800'; break;
+                case 'medium': bgColor = 'bg-yellow-100'; textColor = 'text-yellow-800'; break;
+                case 'low': bgColor = 'bg-red-100'; textColor = 'text-red-800'; break;
+                case 'platinum': bgColor = 'bg-gray-700'; textColor = 'text-white'; break;
+                case 'gold': bgColor = 'bg-yellow-400'; textColor = 'text-yellow-900'; break;
+                case 'silver': bgColor = 'bg-gray-300'; textColor = 'text-gray-800'; break;
+                case 'bronze': bgColor = 'bg-orange-300'; textColor = 'text-orange-800'; break;
+                default: bgColor = 'bg-gray-100'; textColor = 'text-gray-800';
+             }
+             return `<span class="tag ${bgColor} ${textColor}">${text}</span>`;
+        }
+        
+        async function displayCustomerData(customer) {
+            document.getElementById('profile-id').textContent = customer.Customer_ID;
+            document.getElementById('profile-name').textContent = customer.Customer_name;
+            document.getElementById('profile-age').textContent = customer.Age;
+            document.getElementById('profile-dob').textContent = customer.DOB;
+            
+            let prestigeTagType = customer.Prestige_status.toLowerCase().includes('non') ? 'default' : customer.Prestige_status.toLowerCase();
+            document.getElementById('profile-prestige').innerHTML = getTag(prestigeTagType, customer.Prestige_status);
+
+            let leadScoreTag = customer.Lead_Score >= 8 ? 'high' : (customer.Lead_Score >= 5 ? 'medium' : 'low');
+            document.getElementById('profile-lead-score').innerHTML = getTag(leadScoreTag, `${customer.Lead_Score} / 10`);
+            
+            let vitalityTagType = customer.Vitality_Status.toLowerCase();
+            document.getElementById('profile-vitality-status').innerHTML = getTag(vitalityTagType, customer.Vitality_Status);
+
+            document.getElementById('profile-vitality-points').textContent = Number(customer.Vitality_Point).toLocaleString('th-TH');
+            document.getElementById('profile-health-sum').textContent = formatCurrency(customer.Total_Health_Sum_Assure);
+            document.getElementById('profile-ci-sum').textContent = formatCurrency(customer.Total_CI_Sum_Assure);
+            document.getElementById('profile-activity').textContent = customer.Last_3M_Activity;
+
+            await generateAIInsight(customer);
+        }
+
+        function addIconsToInsight(htmlContent) {
+            const icons = {
+                'สรุปโดยรวม': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>`,
+                'การวิเคราะห์ความคุ้มครอง': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>`,
+                'การมีส่วนร่วมและไวทัลลิตี้': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>`,
+                'เหตุผลจาก Lookalike Model': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 015.404 0L9 18.75m-4.5-4.5a3.75 3.75 0 015.404 0L4.5 18.75m0-13.5a3.75 3.75 0 015.404 0L4.5 9.75M18 9.75l-3.75 3.75m-7.5-3.75L18 18.75" /></svg>`,
+                'คำแนะนำและขั้นตอนต่อไป': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" /></svg>`
+            };
+            
+            let finalHtml = htmlContent;
+            for (const key in icons) {
+                const regex = new RegExp(`<h3>${key}</h3>`, 'g');
+                if (key === 'คำแนะนำและขั้นตอนต่อไป') {
+                    finalHtml = finalHtml.replace(regex, `<div id="recommendation-section"><h3>${icons[key]}${key}</h3>`);
+                    // This is a bit of a hack to wrap the last section. Assumes recommendation is always last.
+                    // A proper solution would require parsing the HTML nodes.
+                    finalHtml += `</div>`; 
+                } else {
+                    finalHtml = finalHtml.replace(regex, `<h3>${icons[key]}${key}</h3>`);
+                }
+            }
+            return finalHtml;
+        }
+
+        async function generateAIInsight(customer) {
+            const insightContainer = document.getElementById('ai-insight-content');
+            insightContainer.innerHTML = '<div class="insight-loader"></div><p class="text-center mt-2 text-gray-600">กำลังสร้างข้อมูลเชิงลึกด้วย AI...</p>';
+            
+            const apiKey = "AIzaSyDCePdlr0huLQOQ_sZ83rUf2VvB9gkM7vI";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `คุณคือผู้เชี่ยวชาญ AI สำหรับตัวแทนประกัน AIA ในประเทศไทย วิเคราะห์ข้อมูลลูกค้าและให้ข้อมูลเชิงลึกที่นำไปปฏิบัติได้ในรูปแบบที่มนุษย์อ่านเข้าใจง่าย ตัวแทนต้องการเข้าใจสถานการณ์ของลูกค้าอย่างรวดเร็ว ระบุโอกาสในการขาย และรับคำแนะนำในการเริ่มต้นบทสนทนา ความคุ้มครองโรคร้ายแรง (CI) ที่แนะนำคือ 3 ล้านบาท เพิ่มเหตุผลจาก Lookalike Model ที่อธิบายว่าทำไมลูกค้าคนนี้ถึงคล้ายกับกลุ่มลูกค้าที่มีแนวโน้มจะซื้อประกัน จัดโครงสร้างคำตอบของคุณโดยใช้หัวข้อ markdown ต่อไปนี้: ### สรุปโดยรวม, ### การวิเคราะห์ความคุ้มครอง, ### การมีส่วนร่วมและไวทัลลิตี้, ### เหตุผลจาก Lookalike Model, และ ### คำแนะนำและขั้นตอนต่อไป ตอบเป็นภาษาไทย`;
+
+            const userQuery = `
+                กรุณาสร้างข้อมูลเชิงลึกสำหรับลูกค้าต่อไปนี้:
+                - ชื่อ: ${customer.Customer_name}
+                - อายุ: ${customer.Age}
+                - คะแนนลูกค้ามุ่งหวัง: ${customer.Lead_Score}/10
+                - สถานะ Prestige: ${customer.Prestige_status}
+                - สถานะ Vitality: ${customer.Vitality_Status} พร้อมด้วย ${customer.Vitality_Point} คะแนน
+                - ทุนประกันสุขภาพรวม: ${formatCurrency(customer.Total_Health_Sum_Assure)}
+                - ทุนประกันโรคร้ายแรงรวม: ${formatCurrency(customer.Total_CI_Sum_Assure)}
+                - ผลิตภัณฑ์ที่แนะนำ (จากข้อมูล): ${customer['Product recommendation']}
+                - กิจกรรมดิจิทัล 3 เดือนล่าสุด: ${customer.Last_3M_Activity}
+            `;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const insightText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (insightText) {
+                    let htmlContent = markdownConverter.makeHtml(insightText);
+                    insightContainer.innerHTML = addIconsToInsight(htmlContent);
+                } else {
+                    insightContainer.innerHTML = '<p class="text-red-500">ไม่สามารถดึงข้อมูลเชิงลึกจาก AI ได้ การตอบกลับว่างเปล่า</p>';
+                }
+
+            } catch (error) {
+                console.error("Error fetching AI insight:", error);
+                insightContainer.innerHTML = `<p class="text-red-500">เกิดข้อผิดพลาดขณะสร้างข้อมูลเชิงลึก กรุณาตรวจสอบคอนโซลเพื่อดูรายละเอียด</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
