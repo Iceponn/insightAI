@@ -218,7 +218,7 @@
                 <div class="insight-card p-6 bg-blue-50">
                      <div class="flex items-center border-b pb-3 mb-4">
                         <svg class="w-7 h-7 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-                        <h2 class="text-2xl font-semibold text-gray-800">ข้อมูลเชิงลึกและคำแนะนำจาก AI</h2>
+                        <h2 class="text-2xl font-semibold text-gray-800">AI Insight</h2>
                     </div>
                     <div id="ai-insight-content" class="text-gray-700">
                         <!-- Content will be generated here by the AI -->
@@ -230,7 +230,7 @@
         <!-- Initial View -->
         <div id="initial-view">
              <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 S0 11-4 0 2 2 0 014 0z"></path></svg>
-            <p class="text-xl">กรุณาเลือกลูกค้าเพื่อเริ่มต้น</p>
+            <p class="text-xl">Select customer</p>
         </div>
     </div>
 
@@ -333,11 +333,11 @@
 
         function addIconsToInsight(htmlContent) {
             const icons = {
-                'สรุปโดยรวม': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>`,
-                'การวิเคราะห์ความคุ้มครอง': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>`,
-                'การมีส่วนร่วมและไวทัลลิตี้': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>`,
-                'เหตุผลจาก Lookalike Model': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 015.404 0L9 18.75m-4.5-4.5a3.75 3.75 0 015.404 0L4.5 18.75m0-13.5a3.75 3.75 0 015.404 0L4.5 9.75M18 9.75l-3.75 3.75m-7.5-3.75L18 18.75" /></svg>`,
-                'คำแนะนำและขั้นตอนต่อไป': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" /></svg>`
+                'Overview': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>`,
+                'Coverage Analysis': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>`,
+                'Engagement and Vitality': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>`,
+                'Lookalike Model': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962a3.75 3.75 0 015.404 0L9 18.75m-4.5-4.5a3.75 3.75 0 015.404 0L4.5 18.75m0-13.5a3.75 3.75 0 015.404 0L4.5 9.75M18 9.75l-3.75 3.75m-7.5-3.75L18 18.75" /></svg>`,
+                'Next actions': `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zm-7.518-.267A8.25 8.25 0 1120.25 10.5M8.288 14.212A5.25 5.25 0 1117.25 10.5" /></svg>`
             };
             
             let finalHtml = htmlContent;
@@ -398,12 +398,12 @@
 
         async function generateAIInsight(customer) {
             const insightContainer = document.getElementById('ai-insight-content');
-            insightContainer.innerHTML = '<div class="insight-loader"></div><p class="text-center mt-2 text-gray-600">กำลังสร้างข้อมูลเชิงลึกด้วย AI...</p>';
+            insightContainer.innerHTML = '<div class="insight-loader"></div><p class="text-center mt-2 text-gray-600">AI is thinking...</p>';
             
             const apiKey = "AIzaSyDCePdlr0huLQOQ_sZ83rUf2VvB9gkM7vI";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-            const systemPrompt = `คุณคือผู้เชี่ยวชาญ AI สำหรับตัวแทนประกัน AIA ในประเทศไทย วิเคราะห์ข้อมูลลูกค้าและให้ข้อมูลเชิงลึกที่นำไปปฏิบัติได้ในรูปแบบที่มนุษย์อ่านเข้าใจง่าย ตัวแทนต้องการเข้าใจสถานการณ์ของลูกค้าอย่างรวดเร็ว ระบุโอกาสในการขาย และรับคำแนะนำในการเริ่มต้นบทสนทนา ความคุ้มครองโรคร้ายแรง (CI) ที่แนะนำคือ 3 ล้านบาท เพิ่มเหตุผลจาก Lookalike Model ที่อธิบายว่าทำไมลูกค้าคนนี้ถึงคล้ายกับกลุ่มลูกค้าที่มีแนวโน้มจะซื้อประกัน จัดโครงสร้างคำตอบของคุณโดยใช้หัวข้อ markdown ต่อไปนี้: ### สรุปโดยรวม, ### การวิเคราะห์ความคุ้มครอง, ### การมีส่วนร่วมและไวทัลลิตี้, ### เหตุผลจาก Lookalike Model, และ ### คำแนะนำและขั้นตอนต่อไป ตอบเป็นภาษาไทย`;
+            const systemPrompt = `คุณคือผู้เชี่ยวชาญ AI สำหรับตัวแทนประกัน AIA ในประเทศไทย วิเคราะห์ข้อมูลลูกค้าและให้ข้อมูลเชิงลึกที่นำไปปฏิบัติได้ในรูปแบบที่มนุษย์อ่านเข้าใจง่าย ตัวแทนต้องการเข้าใจสถานการณ์ของลูกค้าอย่างรวดเร็ว ระบุโอกาสในการขาย และรับคำแนะนำในการเริ่มต้นบทสนทนา ความคุ้มครองโรคร้ายแรง (CI) ที่แนะนำคือ 3 ล้านบาท เพิ่มเหตุผลจาก Lookalike Model ที่อธิบายว่าทำไมลูกค้าคนนี้ถึงคล้ายกับกลุ่มลูกค้าที่มีแนวโน้มจะซื้อประกัน จัดโครงสร้างคำตอบของคุณโดยใช้หัวข้อ markdown ต่อไปนี้: ### สรุปโดยรวม, ### การวิเคราะห์ความคุ้มครอง, ### การมีส่วนร่วมและไวทัลลิตี้, ### เหตุผลจาก Lookalike Model, และ ### คำแนะนำและขั้นตอนต่อไป ตอบเป็นภาษาอังกฤษ`;
 
             const userQuery = `
                 กรุณาสร้างข้อมูลเชิงลึกสำหรับลูกค้าต่อไปนี้:
